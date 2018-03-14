@@ -1,0 +1,108 @@
+
+const baseDate = new Date(2017, 9, 20);
+
+let newDate = function (nanoseconds) {
+    // obviously that won't produce correct date as the finest resolution is down to millisecond,
+    // but we are capturing time down to nanosecond. However once I hide the x-axis labels
+    // it will be representative of what's happening (proportions will be more correct with this change than without)
+    return new Date(baseDate.getTime() + nanoseconds);
+};
+
+function countExpandedSections() {
+    return $('a[aria-expanded=true]').length;
+}
+
+let data = {
+    earliestStart: newDate({{ .EarliestStartNanos }}),
+latestEnd: newDate({{ .LatestEndNanos }}),
+charts: [{{ range $chartIndex, $chart := .Charts}}{{ if $chartIndex }},{{ end }}
+{
+    id: '{{ $chart.Id }}',
+        description: '{{ $chart.Description }}',
+    groups: [{{ range $groupIndex, $group := $chart.Groups }}{{ if $groupIndex }},{{ end }}
+    {id: '{{ $group.Id }}', content: '{{ $group.Content }}', order: '{{ $group.Order }}'}{{ end }}],
+    items: [{{ range $itemIndex, $item := $chart.Items }}{{ if $itemIndex }},{{ end }}
+    {id: '{{ $item.Id }}', group: '{{ $item.Group }}', type: '{{ $item.Type }}', content: '{{ $item.Content }}', title: '{{ $item.Title }}', start: newDate({{ $item.StartNanos }}), {{ if $item.ClassName }}className: '{{ $item.ClassName }}',{{ end }} {{ if ne $item.EndNanos $item.StartNanos }}end: newDate({{ $item.EndNanos }}),{{ end }}}{{ end }}
+],
+    customTimes: [{{ range $customTimeIndex, $customTime := $chart.CustomTimes }}{{ if $customTimeIndex }},{{ end }}
+    {id: 'custom-time-{{ $customTimeIndex }}', customTime: newDate({{ $customTime }})}{{ end }}],
+}{{ end }}]
+};
+
+$(function () {
+
+    // console.log(JSON.stringify(data, null, 2));
+
+    data.charts.forEach(chart => {
+        // DOM element where the Timeline will be attached
+        let container = $('#timeline_' + chart.id)[0];
+
+        let items = new vis.DataSet(chart.items);
+
+        let groups = new vis.DataSet(chart.groups);
+
+        // console.log(data.earliestStart);
+        // console.log(data.latestEnd);
+
+        let options = {
+            // editable: true
+            start: data.earliestStart,
+            end: data.latestEnd,
+            zoomable: true,
+            showMajorLabels: false,
+            showMinorLabels: false,
+            showTooltips: true,
+            clickToUse: true
+        };
+
+        // console.log(JSON.stringify(options, null, 2));
+
+        // Create a Timeline
+        let timeline = new vis.Timeline(container, items, groups, options);
+
+        chart.customTimes.forEach(value => timeline.addCustomTime(value.customTime, value.id));
+
+        let adjustExpandCollapseButtonLabel = function () {
+            $("#collapse_all").prop('value', countExpandedSections() > 0 ? 'Collapse all' : 'Expand all');
+        };
+
+        let accordion = $('#accordion');
+        accordion.on('shown.bs.collapse', function () {
+            timeline.redraw();
+            adjustExpandCollapseButtonLabel();
+        });
+
+        accordion.on('hidden.bs.collapse', function () {
+            adjustExpandCollapseButtonLabel();
+        });
+
+        $('#reset_' + chart.id).click(function () {
+            timeline.setWindow(options.start, options.end);
+        });
+
+        $('#redraw_' + chart.id).click(function () {
+            timeline.redraw();
+        });
+    });
+
+    $("#collapse_all").click(function () {
+        $(this).toggleClass("active");
+
+        if (countExpandedSections() === 0) {
+            $('#accordion .collapse').collapse('show')
+        } else {
+            $('#accordion .collapse').collapse('hide')
+        }
+    });
+
+    let hash = window.location.hash;
+    if (hash) {
+        hash = '#collapse_group_' + hash.substr(1);
+        $(hash + ' .collapse').collapse('show');
+        $('html, body').animate({
+            scrollTop: ($(hash).offset().top - $('#navbar').outerHeight())
+        }, 500);
+    }
+});
+
+

@@ -1,0 +1,33 @@
+#accordion {
+    margin: 0.5em;
+}
+
+.accordion-group {
+    border: 1px solid gray;
+    padding: 0.5em;
+    margin: 0.5em;
+    -webkit-box-shadow: .10rem .25rem 1rem rgba(0, 0, 0, .1);
+    -moz-box-shadow: .10rem .25rem 1rem rgba(0, 0, 0, .1);
+    box-shadow: .10rem .25rem 1rem rgba(0, 0, 0, .1);
+}
+
+.vis-item.ghost {
+    background-color: rgba(0, 0, 0, 0.1);
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+.vis-item.beat {
+    background-color: rgba(10, 174, 52, 0.63);
+    border-color: rgba(10, 174, 52, 0.63);
+}
+
+.vis-item.volume{
+    color: darkred;
+    background-color: rgba(255, 0, 0, 0.2);
+    text-align: right;
+}
+
+.vis-custom-time.custom-time-0 {
+    background-color: red;
+    border-width: 2px;
+}

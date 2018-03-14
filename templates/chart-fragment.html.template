@@ -1,0 +1,21 @@
+
+{{ range $chart := .Charts }}
+    <div id="collapse_group_{{$chart.Id}}" class="accordion-group">
+        <div class="accordion-heading">
+            <a data-toggle="collapse" data-target="#collapse_{{$chart.Id}}" href="#collapse_{{$chart.Id}}" aria-expanded="false">
+                <p>{{$chart.Description}}</p>
+            </a>
+        </div>
+        <div id="collapse_{{$chart.Id}}" class="accordion-body collapse">
+            <div class="accordion-inner">
+                <div class="d-flex">
+                  <div class="p-2"><input type="button" id="reset_{{$chart.Id}}" value="Reset view"></div>
+                  <div class="p-2"><input type="button" id="redraw_{{$chart.Id}}" value="Redraw view"></div>
+                  <div class="ml-auto p-2"><span>related code <a href="https://github.com/outo/metronome/blob/master/scenario/{{$chart.CodeBase}}.go" target="_blank">GitHub</a>. <em>Chart created with <a href="http://visjs.org" target="_blank">vis.js</a>. </em></span></div>
+                </div>
+                <div id="timeline_{{$chart.Id}}"></div>
+            </div>
+        </div>
+    </div>
+{{ end }}
+

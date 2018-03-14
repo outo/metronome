@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link lang="en">
+    <meta charset="UTF-8">
+    <title>How to avoid Metronome's Cacophony - Concurrency in Go</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css" type="text/css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="../docs/metronome-cacophony.css"/>
+
+</head>
+<body>
+<p><em>Please note:</em></p>
+<p>After you expand chosen section, please click on the diagram to set focus on it. That will make you able to:</p>
+<ul>
+    <li>zoom</li>
+    <li>pan</li>
+    <li>display tooltip with extra information</li>
+    <li>select item</li>
+</ul>
+<div class="spacer"></div>
+<p><input type="button" id="collapse_all" value="Expand all"></p>
+
+<div class="accordion" id="accordion">
+
+
+
+    <div id="collapse_group_sync_sleep_premeter_volume" class="accordion-group">
+        <div class="accordion-heading">
+            <a data-toggle="collapse" data-target="#collapse_sync_sleep_premeter_volume" href="#collapse_sync_sleep_premeter_volume" aria-expanded="false">
+                <p>1. Synchronous metronome with <b>constant</b> delay and <b>single volume measurement</b>.</p>
+            </a>
+        </div>
+        <div id="collapse_sync_sleep_premeter_volume" class="accordion-body collapse">
+            <div class="accordion-inner">
+                <div class="d-flex">
+                  <div class="p-2"><input type="button" id="reset_sync_sleep_premeter_volume" value="Reset view"></div>
+                  <div class="p-2"><input type="button" id="redraw_sync_sleep_premeter_volume" value="Redraw view"></div>
+                  <div class="ml-auto p-2"><span>related code <a href="https://github.com/outo/metronome/blob/master/scenario/sync_sleep_premeter_volume.go" target="_blank">GitHub</a>. <em>Chart created with <a href="http://visjs.org" target="_blank">vis.js</a>. </em></span></div>
+                </div>
+                <div id="timeline_sync_sleep_premeter_volume"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="collapse_group_sync_constant_delay" class="accordion-group">
+        <div class="accordion-heading">
+            <a data-toggle="collapse" data-target="#collapse_sync_constant_delay" href="#collapse_sync_constant_delay" aria-expanded="false">
+                <p>2. Synchronous metronome with <b>constant</b> delay and volume measurement before each beat.</p>
+            </a>
+        </div>
+        <div id="collapse_sync_constant_delay" class="accordion-body collapse">
+            <div class="accordion-inner">
+                <div class="d-flex">
+                  <div class="p-2"><input type="button" id="reset_sync_constant_delay" value="Reset view"></div>
+                  <div class="p-2"><input type="button" id="redraw_sync_constant_delay" value="Redraw view"></div>
+                  <div class="ml-auto p-2"><span>related code <a href="https://github.com/outo/metronome/blob/master/scenario/sync_constant_delay.go" target="_blank">GitHub</a>. <em>Chart created with <a href="http://visjs.org" target="_blank">vis.js</a>. </em></span></div>
+                </div>
+                <div id="timeline_sync_constant_delay"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="collapse_group_sync_adaptive_delay" class="accordion-group">
+        <div class="accordion-heading">
+            <a data-toggle="collapse" data-target="#collapse_sync_adaptive_delay" href="#collapse_sync_adaptive_delay" aria-expanded="false">
+                <p>3. Synchronous metronome with <b>adaptive</b> delay and volume measurement before each beat. </p>
+            </a>
+        </div>
+        <div id="collapse_sync_adaptive_delay" class="accordion-body collapse">
+            <div class="accordion-inner">
+                <div class="d-flex">
+                  <div class="p-2"><input type="button" id="reset_sync_adaptive_delay" value="Reset view"></div>
+                  <div class="p-2"><input type="button" id="redraw_sync_adaptive_delay" value="Redraw view"></div>
+                  <div class="ml-auto p-2"><span>related code <a href="https://github.com/outo/metronome/blob/master/scenario/sync_adaptive_delay.go" target="_blank">GitHub</a>. <em>Chart created with <a href="http://visjs.org" target="_blank">vis.js</a>. </em></span></div>
+                </div>
+                <div id="timeline_sync_adaptive_delay"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="collapse_group_sync_adaptive_delay_oscillating_execution_time" class="accordion-group">
+        <div class="accordion-heading">
+            <a data-toggle="collapse" data-target="#collapse_sync_adaptive_delay_oscillating_execution_time" href="#collapse_sync_adaptive_delay_oscillating_execution_time" aria-expanded="false">
+                <p>4. Synchronous metronome with <b>adaptive</b> delay and volume measurement before each beat. Execution time of volume measurement is <b>oscillating</b>. </p>
+            </a>
+        </div>
+        <div id="collapse_sync_adaptive_delay_oscillating_execution_time" class="accordion-body collapse">
+            <div class="accordion-inner">
+                <div class="d-flex">
+                  <div class="p-2"><input type="button" id="reset_sync_adaptive_delay_oscillating_execution_time" value="Reset view"></div>
+                  <div class="p-2"><input type="button" id="redraw_sync_adaptive_delay_oscillating_execution_time" value="Redraw view"></div>
+                  <div class="ml-auto p-2"><span>related code <a href="https://github.com/outo/metronome/blob/master/scenario/sync_adaptive_delay.go" target="_blank">GitHub</a>. <em>Chart created with <a href="http://visjs.org" target="_blank">vis.js</a>. </em></span></div>
+                </div>
+                <div id="timeline_sync_adaptive_delay_oscillating_execution_time"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="collapse_group_sync_ticker" class="accordion-group">
+        <div class="accordion-heading">
+            <a data-toggle="collapse" data-target="#collapse_sync_ticker" href="#collapse_sync_ticker" aria-expanded="false">
+                <p>5. Synchronous metronome with <b>ticker</b>. Notice initial delay before first volume measurement, caused by Ticker <b>not firing immediately</b>. </p>
+            </a>
+        </div>
+        <div id="collapse_sync_ticker" class="accordion-body collapse">
+            <div class="accordion-inner">
+                <div class="d-flex">
+                  <div class="p-2"><input type="button" id="reset_sync_ticker" value="Reset view"></div>
+                  <div class="p-2"><input type="button" id="redraw_sync_ticker" value="Redraw view"></div>
+                  <div class="ml-auto p-2"><span>related code <a href="https://github.com/outo/metronome/blob/master/scenario/sync_ticker.go" target="_blank">GitHub</a>. <em>Chart created with <a href="http://visjs.org" target="_blank">vis.js</a>. </em></span></div>
+                </div>
+                <div id="timeline_sync_ticker"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="collapse_group_sync_ticker_fire_immediately" class="accordion-group">
+        <div class="accordion-heading">
+            <a data-toggle="collapse" data-target="#collapse_sync_ticker_fire_immediately" href="#collapse_sync_ticker_fire_immediately" aria-expanded="false">
+                <p>6. Synchronous metronome with <b>ticker firing immediately</b>. </p>
+            </a>
+        </div>
+        <div id="collapse_sync_ticker_fire_immediately" class="accordion-body collapse">
+            <div class="accordion-inner">
+                <div class="d-flex">
+                  <div class="p-2"><input type="button" id="reset_sync_ticker_fire_immediately" value="Reset view"></div>
+                  <div class="p-2"><input type="button" id="redraw_sync_ticker_fire_immediately" value="Redraw view"></div>
+                  <div class="ml-auto p-2"><span>related code <a href="https://github.com/outo/metronome/blob/master/scenario/sync_ticker_fire_immediately.go" target="_blank">GitHub</a>. <em>Chart created with <a href="http://visjs.org" target="_blank">vis.js</a>. </em></span></div>
+                </div>
+                <div id="timeline_sync_ticker_fire_immediately"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="collapse_group_sync_ticker_fire_immediately_oscillating_execution_time" class="accordion-group">
+        <div class="accordion-heading">
+            <a data-toggle="collapse" data-target="#collapse_sync_ticker_fire_immediately_oscillating_execution_time" href="#collapse_sync_ticker_fire_immediately_oscillating_execution_time" aria-expanded="false">
+                <p>7. Synchronous metronome with <b>ticker firing immediately</b>. Execution time of volume measurement is <b>oscillating</b>. </p>
+            </a>
+        </div>
+        <div id="collapse_sync_ticker_fire_immediately_oscillating_execution_time" class="accordion-body collapse">
+            <div class="accordion-inner">
+                <div class="d-flex">
+                  <div class="p-2"><input type="button" id="reset_sync_ticker_fire_immediately_oscillating_execution_time" value="Reset view"></div>
+                  <div class="p-2"><input type="button" id="redraw_sync_ticker_fire_immediately_oscillating_execution_time" value="Redraw view"></div>
+                  <div class="ml-auto p-2"><span>related code <a href="https://github.com/outo/metronome/blob/master/scenario/sync_ticker_fire_immediately.go" target="_blank">GitHub</a>. <em>Chart created with <a href="http://visjs.org" target="_blank">vis.js</a>. </em></span></div>
+                </div>
+                <div id="timeline_sync_ticker_fire_immediately_oscillating_execution_time"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="collapse_group_sync_ticker_fire_immediately_randomised_execution_time" class="accordion-group">
+        <div class="accordion-heading">
+            <a data-toggle="collapse" data-target="#collapse_sync_ticker_fire_immediately_randomised_execution_time" href="#collapse_sync_ticker_fire_immediately_randomised_execution_time" aria-expanded="false">
+                <p>8. Synchronous metronome with <b>ticker firing immediately</b>. Execution time of volume measurement is <b>random</b>. </p>
+            </a>
+        </div>
+        <div id="collapse_sync_ticker_fire_immediately_randomised_execution_time" class="accordion-body collapse">
+            <div class="accordion-inner">
+                <div class="d-flex">
+                  <div class="p-2"><input type="button" id="reset_sync_ticker_fire_immediately_randomised_execution_time" value="Reset view"></div>
+                  <div class="p-2"><input type="button" id="redraw_sync_ticker_fire_immediately_randomised_execution_time" value="Redraw view"></div>
+                  <div class="ml-auto p-2"><span>related code <a href="https://github.com/outo/metronome/blob/master/scenario/sync_ticker_fire_immediately.go" target="_blank">GitHub</a>. <em>Chart created with <a href="http://visjs.org" target="_blank">vis.js</a>. </em></span></div>
+                </div>
+                <div id="timeline_sync_ticker_fire_immediately_randomised_execution_time"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="collapse_group_async_naive" class="accordion-group">
+        <div class="accordion-heading">
+            <a data-toggle="collapse" data-target="#collapse_async_naive" href="#collapse_async_naive" aria-expanded="false">
+                <p>9. Asynchronous metronome - naive implementation. Execution time of volume measurement is <b>random</b>. </p>
+            </a>
+        </div>
+        <div id="collapse_async_naive" class="accordion-body collapse">
+            <div class="accordion-inner">
+                <div class="d-flex">
+                  <div class="p-2"><input type="button" id="reset_async_naive" value="Reset view"></div>
+                  <div class="p-2"><input type="button" id="redraw_async_naive" value="Redraw view"></div>
+                  <div class="ml-auto p-2"><span>related code <a href="https://github.com/outo/metronome/blob/master/scenario/async_naive.go" target="_blank">GitHub</a>. <em>Chart created with <a href="http://visjs.org" target="_blank">vis.js</a>. </em></span></div>
+                </div>
+                <div id="timeline_async_naive"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="collapse_group_async_naive_waiting_for_completion" class="accordion-group">
+        <div class="accordion-heading">
+            <a data-toggle="collapse" data-target="#collapse_async_naive_waiting_for_completion" href="#collapse_async_naive_waiting_for_completion" aria-expanded="false">
+                <p>10. Asynchronous metronome - naive implementation that at least <b>waits for the completion</b> of the whole execution. Execution time of volume measurement is <b>random</b>. </p>
+            </a>
+        </div>
+        <div id="collapse_async_naive_waiting_for_completion" class="accordion-body collapse">
+            <div class="accordion-inner">
+                <div class="d-flex">
+                  <div class="p-2"><input type="button" id="reset_async_naive_waiting_for_completion" value="Reset view"></div>
+                  <div class="p-2"><input type="button" id="redraw_async_naive_waiting_for_completion" value="Redraw view"></div>
+                  <div class="ml-auto p-2"><span>related code <a href="https://github.com/outo/metronome/blob/master/scenario/async_naive_waiting_for_completion.go" target="_blank">GitHub</a>. <em>Chart created with <a href="http://visjs.org" target="_blank">vis.js</a>. </em></span></div>
+                </div>
+                <div id="timeline_async_naive_waiting_for_completion"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="collapse_group_async_with_atomic" class="accordion-group">
+        <div class="accordion-heading">
+            <a data-toggle="collapse" data-target="#collapse_async_with_atomic" href="#collapse_async_with_atomic" aria-expanded="false">
+                <p>11. Asynchronous metronome with <b>atomic variables</b>. Execution time of volume measurement is <b>random</b>. </p>
+            </a>
+        </div>
+        <div id="collapse_async_with_atomic" class="accordion-body collapse">
+            <div class="accordion-inner">
+                <div class="d-flex">
+                  <div class="p-2"><input type="button" id="reset_async_with_atomic" value="Reset view"></div>
+                  <div class="p-2"><input type="button" id="redraw_async_with_atomic" value="Redraw view"></div>
+                  <div class="ml-auto p-2"><span>related code <a href="https://github.com/outo/metronome/blob/master/scenario/async_with_atomic.go" target="_blank">GitHub</a>. <em>Chart created with <a href="http://visjs.org" target="_blank">vis.js</a>. </em></span></div>
+                </div>
+                <div id="timeline_async_with_atomic"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="collapse_group_async_with_mutex" class="accordion-group">
+        <div class="accordion-heading">
+            <a data-toggle="collapse" data-target="#collapse_async_with_mutex" href="#collapse_async_with_mutex" aria-expanded="false">
+                <p>12. Asynchronous metronome with <b>mutex</b> protecting shared state. Execution time of volume measurement is <b>random</b>. </p>
+            </a>
+        </div>
+        <div id="collapse_async_with_mutex" class="accordion-body collapse">
+            <div class="accordion-inner">
+                <div class="d-flex">
+                  <div class="p-2"><input type="button" id="reset_async_with_mutex" value="Reset view"></div>
+                  <div class="p-2"><input type="button" id="redraw_async_with_mutex" value="Redraw view"></div>
+                  <div class="ml-auto p-2"><span>related code <a href="https://github.com/outo/metronome/blob/master/scenario/async_with_mutex.go" target="_blank">GitHub</a>. <em>Chart created with <a href="http://visjs.org" target="_blank">vis.js</a>. </em></span></div>
+                </div>
+                <div id="timeline_async_with_mutex"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="collapse_group_async_with_channels" class="accordion-group">
+        <div class="accordion-heading">
+            <a data-toggle="collapse" data-target="#collapse_async_with_channels" href="#collapse_async_with_channels" aria-expanded="false">
+                <p>13. Asynchronous metronome with <b>channels</b> communicating state changes. Execution time of volume measurement is <b>random</b>. </p>
+            </a>
+        </div>
+        <div id="collapse_async_with_channels" class="accordion-body collapse">
+            <div class="accordion-inner">
+                <div class="d-flex">
+                  <div class="p-2"><input type="button" id="reset_async_with_channels" value="Reset view"></div>
+                  <div class="p-2"><input type="button" id="redraw_async_with_channels" value="Redraw view"></div>
+                  <div class="ml-auto p-2"><span>related code <a href="https://github.com/outo/metronome/blob/master/scenario/async_with_channels.go" target="_blank">GitHub</a>. <em>Chart created with <a href="http://visjs.org" target="_blank">vis.js</a>. </em></span></div>
+                </div>
+                <div id="timeline_async_with_channels"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="collapse_group_async_with_channels_services" class="accordion-group">
+        <div class="accordion-heading">
+            <a data-toggle="collapse" data-target="#collapse_async_with_channels_services" href="#collapse_async_with_channels_services" aria-expanded="false">
+                <p>14. Asynchronous metronome with <b>channels</b> communicating state changes. All asynchronous. Execution time of volume measurement is <b>random</b>. </p>
+            </a>
+        </div>
+        <div id="collapse_async_with_channels_services" class="accordion-body collapse">
+            <div class="accordion-inner">
+                <div class="d-flex">
+                  <div class="p-2"><input type="button" id="reset_async_with_channels_services" value="Reset view"></div>
+                  <div class="p-2"><input type="button" id="redraw_async_with_channels_services" value="Redraw view"></div>
+                  <div class="ml-auto p-2"><span>related code <a href="https://github.com/outo/metronome/blob/master/scenario/async_with_channels_services.go" target="_blank">GitHub</a>. <em>Chart created with <a href="http://visjs.org" target="_blank">vis.js</a>. </em></span></div>
+                </div>
+                <div id="timeline_async_with_channels_services"></div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script src="metronome-cacophony.js"></script>
+</body>
+</html>
+
